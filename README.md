@@ -1,69 +1,50 @@
-# Neha Joy — React Portfolio
+# Neha Joy — React Portfolio | GitHub Pages
 
-A modern, responsive, single-page portfolio website built with **React.js + JavaScript + Vite** based on the attached CV.
+This package supports **two simple ways** to host directly on GitHub Pages without a gh-pages branch or a custom Actions workflow.
 
-## Getting started
+## Easiest: use the prebuilt `docs/` folder
 
-Requirements: Node.js 18+ (Node 20+ recommended), npm.
+1. Create/open the GitHub repository `Neha-joy/PORTFOLIO`.
+2. Put the **contents of this ZIP** at the repository root (not inside another nested folder).
+3. Commit and push to the `main` branch.
+4. In GitHub **Settings > Pages**, choose **Deploy from a branch** and `main` / `/docs`, then Save.
+5. Visit https://neha-joy.github.io/PORTFOLIO/ after publishing completes.
 
-```bash
+The `docs/` folder runs the same React portfolio through browser-loaded React, Lucide, and Babel modules (internet connectivity is required to load these CDN libraries). This option is immediately publishable without installing Node.
+
+## Recommended for future edits: build optimized Vite output
+
+From the folder containing `package.json`:
+
+```powershell
 npm install
-npm run dev
-```
-
-Open the local address printed in the terminal (normally http://localhost:5173).
-
-## Build for production
-
-```bash
 npm run build
-npm run preview
+if (Test-Path docs) { Remove-Item docs -Recurse -Force }
+Copy-Item dist docs -Recurse
+git add .
+git commit -m "Update portfolio"
+git push origin main
 ```
 
-The deployable website is generated in `dist/`. Publish that folder to Netlify, Vercel, or another static host.
+The normal Vite production build is optimized and does not need CDN Babel. The `vite.config.js` contains the matching `base: '/PORTFOLIO/'` value.
 
-## Customize
+## EmailJS
 
-- Change content, projects, experience, and skills in `src/main.jsx`.
-- Change layout, colors, and typography in `src/style.css`.
-- Replace `public/Neha_Joy_Resume.pdf` to update the downloadable resume.
-- Add your GitHub, LinkedIn, and project links once you have confirmed URLs. They are intentionally not invented.
-- The contact form sends through EmailJS after you configure your own EmailJS keys. A direct email link is still available as backup.
+The three **browser-side** EmailJS IDs seen in the supplied screenshot are preserved in `.env.production` (for Vite builds) and `docs/main.jsx` (for the immediately publishable site):
 
-## Features
+- Service ID: `service_eqtu7c`
+- Template ID: `template_g66nlle`
+- Public Key: `YCRPNjG4OXPKWH2kI`
 
-- Responsive sticky navigation and mobile menu
-- Hero with animated coding card
-- About, skills, filterable projects, experience, education, contact sections
-- Downloadable original resume
-- Click-to-email and copy-email buttons
-- Lightweight CSS animations and accessible reduced-motion setting
+The EmailJS template should use `{{from_name}}`, `{{reply_to}}`, `{{subject}}`, and `{{message}}`, and be directed to `nehajoy002@gmail.com`. Confirm each ID matches EmailJS dashboard in case the screenshot transcription differs. Browser-side IDs are visible to visitors and are not secrets. Use EmailJS domain restrictions and abuse protection. Sending requires the EmailJS service and template to be active.
 
-## Enable the contact form (EmailJS)
+## Folder layout
 
-The form fields are Name, Email, Subject, and Message. It displays sending, success, and error states. The form needs **your** EmailJS account configuration before it can deliver messages.
+- `docs/` — **ready to publish** on GitHub Pages from `main` / `/docs`.
+- `src/` — editable React app.
+- `public/` — CV included with the Vite build.
+- `vite.config.js` — GitHub Pages path setting.
+- `.env.production` — browser-side EmailJS settings used when building.
+- `package.json` — commands for Vite development / production build.
 
-1. Register at https://www.emailjs.com/ and connect an email service (e.g., Gmail or Outlook) in **Email Services**.
-2. In **Email Templates**, create a template with these variables:
-   - **To Email**: `nehajoy002@gmail.com` (set this directly in the EmailJS template settings)
-   - **Subject**: `Portfolio contact: {{subject}}`
-   - **Body**:
-     ```text
-     Name: {{from_name}}
-     Email: {{reply_to}}
-     Subject: {{subject}}
-
-     {{message}}
-     ```
-   - **Reply To**: `{{reply_to}}`
-3. Copy **Service ID**, **Template ID**, and **Public Key** from EmailJS.
-4. Copy `.env.example` to `.env.local` and replace placeholder values:
-   ```env
-   VITE_EMAILJS_SERVICE_ID=service_your_service
-   VITE_EMAILJS_TEMPLATE_ID=template_your_template
-   VITE_EMAILJS_PUBLIC_KEY=your_public_key
-   ```
-5. Restart `npm run dev`, submit a test message, and confirm it arrives at `nehajoy002@gmail.com`.
-6. When deploying to Vercel or Netlify, set the same three variables in your site's environment-variable settings, then redeploy.
-
-**Important**: Vite `VITE_` values are publicly visible in browser bundles, as designed for EmailJS public configuration. Do not put private keys or passwords here. Set EmailJS domain restrictions, rate limits and/or CAPTCHA protection in the EmailJS dashboard to reduce misuse. If the form is not configured, it clearly displays an error and visitors can use the direct email link.
+Do not upload a `.env.local` file with any private account credentials.
